@@ -6,12 +6,60 @@ import time
 import pyautogui
 from datetime import datetime
 
-MONITOR = {
-    "left": 2155,
-    "top": 1034,
-    "width": 12,
-    "height": 45
+RESOLUTIONS = {
+    "A": (2560, 1440),
+    "B": (1920, 1080),
+    "C": (3440, 1440),
+    "D": (3840, 2160),
+    "E": (1600, 900)
 }
+
+# MONITOR REGION AS PERCENTAGES
+# (relative to screen size)
+MONITOR_PERCENT = {
+    "left": 0.84,     # 84% from left
+    "top": 0.72,      # 72% from top
+    "width": 0.005,   # 0.5% of screen width
+    "height": 0.031   # 3.1% of screen height
+}
+
+def select_resolution():
+    print("Please select your screen resolution:")
+    for key, res in RESOLUTIONS.items():
+        print(f"{key}) {res[0]}x{res[1]}")
+
+    while True:
+        choice = input("Your choice: ").upper().strip()
+        if choice in RESOLUTIONS:
+            width, height = RESOLUTIONS[choice]
+            print(f"Selected resolution: {width}x{height}")
+            return width, height
+        else:
+            print("Invalid option. Please try again.")
+
+def calculate_monitor(screen_width, screen_height):
+    left   = int(screen_width  * MONITOR_PERCENT["left"])
+    top    = int(screen_height * MONITOR_PERCENT["top"])
+    width  = int(screen_width  * MONITOR_PERCENT["width"])
+    height = int(screen_height * MONITOR_PERCENT["height"])
+
+    return {
+        "left": left,
+        "top": top,
+        "width": width,
+        "height": height
+    }
+
+# ============================
+# EXECUTE SELECTION
+# ============================
+
+screen_w, screen_h = select_resolution()
+MONITOR = calculate_monitor(screen_w, screen_h)
+
+print("\nCalculated MONITOR region:")
+print(MONITOR)
+print("=" * 50)
 
 # Orange range
 LOWER_ORANGE = np.array([10, 120, 120])
