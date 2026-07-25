@@ -1,7 +1,8 @@
 # GrandRP-auto-fuel-collector
-Collects automatic benzin (will be expanded to all three oil-types) on grand rp at the new oil plattformers.
-This script does not automatically pass the humen authentification. You need to do it manually.
-How to use it? -> [Supported-Resolutions]
+Collects automatic benzin (will be expanded to all three oil-types) on grand rp at the new oil plattformers.<br>
+Generates ~200 pieces in 1 hour.
+This script does not automatically pass the humen authentification. You need to do it manually.<br>
+How to use it? -> [#supported-resolutions]
 
 #### Use at your own risk. 
 
