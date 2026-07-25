@@ -1,7 +1,9 @@
 # GrandRP-auto-fuel-collector
-Collects automatic benzin on grand rp at the new oil plattformers.
+Collects automatic benzin (will be expanded to all three oil-types) on grand rp at the new oil plattformers.
+This script does not automatically pass the humen authentification. You need to do it manually.
+How to use it? -> [Supported-Resolutions]
 
-### Use at your own risk. 
+#### Use at your own risk. 
 
 ## Overview
 
@@ -61,7 +63,7 @@ When starting the script, select one of the following resolutions:
 | E | 1600 × 900 |
 
 The script calculates the monitoring area automatically based on the selected resolution. 
-### Please be sure, to have the default scale: 16:9. Otherwise it will not work correct.
+#### Please be sure, to have the default scale: 16:9. Otherwise it will not work correct.
 
 ## Controls
 
