@@ -15,12 +15,17 @@ RESOLUTIONS = {
 }
 
 # MONITOR REGION AS PERCENTAGES
-# (relative to screen size)
 MONITOR_PERCENT = {
-    "left": 0.84,     # 84% from left
-    "top": 0.72,      # 72% from top
-    "width": 0.005,   # 0.5% of screen width
-    "height": 0.031   # 3.1% of screen height
+    "left": 0.84,
+    "top": 0.72,
+    "width": 0.005,
+    "height": 0.031
+}
+
+# CLICK POSITION AS PERCENTAGES
+CLICK_PERCENT = {
+    "x": 0.08,   # 8% from left
+    "y": 0.70    # 70% from top
 }
 
 def select_resolution():
@@ -50,22 +55,23 @@ def calculate_monitor(screen_width, screen_height):
         "height": height
     }
 
-# ============================
-# EXECUTE SELECTION
-# ============================
+def calculate_click_position(screen_width, screen_height):
+    x = int(screen_width  * CLICK_PERCENT["x"])
+    y = int(screen_height * CLICK_PERCENT["y"])
+    return x, y
 
 screen_w, screen_h = select_resolution()
 MONITOR = calculate_monitor(screen_w, screen_h)
+CLICK_X, CLICK_Y = calculate_click_position(screen_w, screen_h)
 
 print("\nCalculated MONITOR region:")
 print(MONITOR)
+print("Calculated click position:", CLICK_X, CLICK_Y)
 print("=" * 50)
 
-# Orange range
 LOWER_ORANGE = np.array([10, 120, 120])
 UPPER_ORANGE = np.array([25, 255, 255])
 
-# Green range (bar visible but not orange)
 LOWER_GREEN = np.array([45, 80, 80])
 UPPER_GREEN = np.array([95, 255, 255])
 
@@ -76,24 +82,21 @@ print("=" * 50)
 
 running = False
 last_press_time = 0
-PRESS_INTERVAL = 0.25   # press E every 250ms while orange is visible
+PRESS_INTERVAL = 0.25
 
 with mss.MSS() as sct:
     while True:
 
-        # Start monitoring
         if keyboard.is_pressed("F8") and not running:
             running = True
             print(f"[{datetime.now().strftime('%H:%M:%S')}] Monitoring started.")
             time.sleep(0.3)
 
-        # Stop monitoring
         if keyboard.is_pressed("F12") and running:
             running = False
             print(f"[{datetime.now().strftime('%H:%M:%S')}] Monitoring stopped.")
             time.sleep(0.3)
 
-        # Exit program
         if keyboard.is_pressed("esc"):
             print("Program terminated.")
             break
@@ -102,11 +105,9 @@ with mss.MSS() as sct:
             time.sleep(0.05)
             continue
 
-        # Capture screen region
         img = np.array(sct.grab(MONITOR))
         hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
-        # Masks
         mask_orange = cv2.inRange(hsv, LOWER_ORANGE, UPPER_ORANGE)
         mask_green  = cv2.inRange(hsv, LOWER_GREEN, UPPER_GREEN)
 
@@ -118,7 +119,7 @@ with mss.MSS() as sct:
         orange_detected = len(ys_orange) > 0
         green_detected  = len(ys_green) > 0
 
-        # 1) ORANGE → press E repeatedly
+        # ORANGE → press E repeatedly
         if orange_detected:
             if time.time() - last_press_time > PRESS_INTERVAL:
                 print(f"[{now}] >>> Pressed E (orange detected) <<<")
@@ -126,12 +127,12 @@ with mss.MSS() as sct:
                 last_press_time = time.time()
             continue
 
-        # 2) GREEN → do nothing
+        # GREEN → do nothing
         if green_detected:
             print(f"[{now}] Green detected.")
             continue
 
-        # 3) NO BAR → left-click
+        # NO BAR → left-click
         print(f"[{now}] No bar detected → Left-click executed.")
-        pyautogui.click(x=200, y=1300)  # adjust coordinates if needed
+        pyautogui.click(x=CLICK_X, y=CLICK_Y)
         time.sleep(0.1)
